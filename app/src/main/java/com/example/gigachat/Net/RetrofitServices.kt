@@ -22,8 +22,8 @@ interface RetrofitServices {
         @Field("scope") scope: String = "GIGACHAT_API_PERS",
         @Header("Content-Type") contentType: String = "application/x-www-form-urlencoded",
         @Header("Accept") accept: String = "application/json",
-        @Header("RqUID") id: String = "Ваш RqUID",
-        @Header("Authorization") auth: String = "Basic + ваш Authorization"
+        @Header("RqUID") id: String = "Ваш ID",
+        @Header("Authorization") auth: String = "Basic Ваш auth"
     ): Token
 
     @POST()

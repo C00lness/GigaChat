@@ -1,5 +1,8 @@
 package com.example.gigachat.Net
 
+import android.app.Application
+import androidx.room.Room
+import com.example.gigachat.DataBase.AppDatabase
 import com.example.gigachat.Utils
 import dagger.Module
 import dagger.Provides
@@ -40,6 +43,9 @@ object RetrofitClasses  {
     {
         return retrofit.create(RetrofitServices::class.java)
     }
+    @Provides
+    @Singleton
+    fun getDataBase(app: Application) = Room.databaseBuilder(app, AppDatabase::class.java, "Answer.db").build()
 }
 
 fun getUnsafeOkHttpClient(): OkHttpClient.Builder {

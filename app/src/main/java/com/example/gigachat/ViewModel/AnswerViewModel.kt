@@ -3,6 +3,7 @@ package com.example.gigachat.ViewModel
 import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
+import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 
 import androidx.appcompat.app.AppCompatActivity
@@ -15,13 +16,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.gigachat.Model.DataRaw
+import com.example.gigachat.Model.DbAnswer
 import com.example.gigachat.Model.Messages
 import com.example.gigachat.MyApplication
+import com.example.gigachat.Repository.DataBaseRepository
 import com.example.gigachat.Repository.MainRepository
 import com.example.gigachat.Utils
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
@@ -32,14 +36,16 @@ import retrofit2.HttpException
 import retrofit2.create
 import java.io.EOFException
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
 import java.time.temporal.ChronoUnit
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
-class AnswerViewModel @Inject constructor(val repository: MainRepository): ViewModel(){
+class AnswerViewModel @Inject constructor(val repository: MainRepository, val dbRepository: DataBaseRepository): ViewModel(){
     var result: String  by mutableStateOf("")
     val context = MyApplication.appContext
     val sharedpref =
@@ -72,7 +78,24 @@ class AnswerViewModel @Inject constructor(val repository: MainRepository): ViewM
         val dr = DataRaw("GigaChat", arrayOf( msg), 1, 0.1, 1, false, 512, 1, 0)
 
             viewModelScope.launch {
-                try {result = repository.getAnswer("https://gigachat.devices.sberbank.ru/api/v1/chat/completions", dr, "Bearer " + token).choices[0].message.content}
+                try {
+                    val nAnswer: DbAnswer? = dbRepository.getAnswer(content)
+                    if ( nAnswer != null)
+                    {
+                        Log.d("Mode", "Db")
+                        result = nAnswer.answer
+                    }
+                    else
+                    {
+                        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                        val currentDate = sdf.format(Date())
+
+                        result = repository.getAnswer("https://gigachat.devices.sberbank.ru/api/v1/chat/completions", dr, "Bearer " + token).choices[0].message.content
+                        val dbAnswer = DbAnswer(currentDate.hashCode().toInt(), content, result)
+                        dbRepository.insertAnswer(dbAnswer)
+                        Log.d("Mode", "Net")
+                    }
+                }
                 catch (E:IOException){result = "getAnswer " + E.message.toString()}
                 catch (E:HttpException){result = "getAnswer " + E.message.toString()}
             }

@@ -4,11 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Answer(
-    val choices: Array<Choices>,
+data class DbAnswer(
     @PrimaryKey(autoGenerate = true)
-    val created: Long,
-    val model: String,
-    val aObject: String,
-    val use: Usage
+    val id: Int,
+    val query: String,
+    val answer: String
 )

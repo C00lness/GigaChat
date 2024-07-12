@@ -9,22 +9,41 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,11 +52,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.gigachat.Utils
 
 import com.example.gigachat.ViewModel.AnswerViewModel
 
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen (viewModel: AnswerViewModel){
@@ -52,29 +72,24 @@ fun HomeScreen (viewModel: AnswerViewModel){
     var textLenght by rememberSaveable { mutableStateOf("") }
 
     var visible by remember { mutableStateOf(true) }
-    Card(
+
+        Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(16.dp),
         shape = RoundedCornerShape(16.dp),
         content = {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp, 8.dp),
-                horizontalArrangement = Arrangement.Absolute.Center
-            ){
-                Button(onClick = { visible = !visible})
-                {
-                    Text((if(visible) "Скрыть настройки" else "Показать настройки"), fontSize = 12.sp)
-                }
-            }
+            TopAppBar(title= { Text("GigaChat", fontSize = 22.sp)},
+                navigationIcon={ IconButton(onClick = {visible = !visible }) {Icon(if(visible) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp, contentDescription = "Параметры")} },
+                actions={
+                    IconButton(onClick = { }) { Icon(Icons.Filled.Info, contentDescription = "О приложении")}
+                    })
             Row (
                 Modifier
                     .alpha(if (visible) 0f else 1f))
             {
                 Text(
-                    (if(visible) "" else result),
+                    (if(visible) "" else result!!),
                     modifier = Modifier
                         .padding(16.dp, 8.dp)
                         .verticalScroll(rememberScrollState()),
@@ -155,29 +170,29 @@ fun HomeScreen (viewModel: AnswerViewModel){
                     .alpha(if (visible) 1f else 0f),
                 horizontalArrangement = Arrangement.Absolute.Center
             ){
-
-                Button(onClick = {
-                    var finContent:String
-                    var content: String = selectedSexOption.toString() + " "
-                    if(selectedResultOption.toString() == "Накачаться")
-                    {
-                        content = content + "Хочу накачать мышцы "
-                        finContent = "Составь примерную программу тренировок на грудь и ягодицы."
+                ExtendedFloatingActionButton(
+                    icon = { Icon(Icons.Filled.PlayArrow, contentDescription = "Добавить") },
+                    text = { Text("Запрос") },
+                    onClick = {
+                        var finContent:String
+                        var content: String = selectedSexOption.toString() + " "
+                        if(selectedResultOption.toString() == "Накачаться")
+                        {
+                            content = content + "Хочу накачать мышцы "
+                            finContent = "Составь примерную программу тренировок на грудь и ягодицы."
+                        }
+                        else
+                        {
+                            content = content + "Хочу похудеть "
+                            finContent = "Составь пожалуйста меню на день."
+                        }
+                        content = content + textWeight.toString() + " килограмм. " + textLenght.toString() + " сантиметров. " + finContent
+                        viewModel.getResult(content)
                     }
-                    else
-                    {
-                        content = content + "Хочу похудеть "
-                        finContent = "Составь пожалуйста меню на день."
-                    }
-                    content = content + textWeight.toString() + " килограмм. " + textLenght.toString() + " сантиметров. " + finContent
-                    viewModel.getResult(content)
-                })
-                {
-                    Text("Запрос", fontSize = 16.sp)
-                }
+                )
             }
             Text(
-                result,
+                result!!,
                 modifier = Modifier
                     .alpha(if (visible) 1f else 0f)
                     .padding(16.dp, 8.dp)
