@@ -2,8 +2,10 @@ package com.example.gigachat.Net
 
 import android.app.Application
 import androidx.room.Room
-import com.example.gigachat.DataBase.AppDatabase
-import com.example.gigachat.Utils
+import com.example.gigachat.DataBase.AnswerDataBase
+import com.example.gigachat.DataBase.RegistrationDataBase
+import com.example.gigachat.Repository.ADataBase
+import com.example.gigachat.Repository.RDataBase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.security.SecureRandom
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
+import javax.inject.Named
 import javax.inject.Singleton
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
@@ -22,31 +25,28 @@ import javax.net.ssl.X509TrustManager
 
 @Module
 @InstallIn(SingletonComponent::class)
-object RetrofitClasses  {
+object RetrofitClasses {
 
     @Provides
     fun providesBaseUrl() = "https://ngw.devices.sberbank.ru:9443/api/v2/"
 
     @Provides
     @Singleton
-    fun getRetrofitInstance(base_Url:String): Retrofit
-    {
+    fun getRetrofitInstance(base_Url: String): Retrofit {
         return Retrofit.Builder()
             .baseUrl(base_Url)
             .client(getUnsafeOkHttpClient().build())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
     @Provides
     @Singleton
-    fun getRetrofitInterface(retrofit: Retrofit): RetrofitServices
-    {
+    fun getRetrofitInterface(retrofit: Retrofit): RetrofitServices {
         return retrofit.create(RetrofitServices::class.java)
     }
-    @Provides
-    @Singleton
-    fun getDataBase(app: Application) = Room.databaseBuilder(app, AppDatabase::class.java, "Answer.db").build()
 }
+
 
 fun getUnsafeOkHttpClient(): OkHttpClient.Builder {
     return try {

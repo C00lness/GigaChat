@@ -3,7 +3,6 @@ package com.example.gigachat.ViewModel
 import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
-import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
 
 import androidx.appcompat.app.AppCompatActivity
@@ -11,40 +10,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.gigachat.Model.DataRaw
 import com.example.gigachat.Model.DbAnswer
 import com.example.gigachat.Model.Messages
 import com.example.gigachat.MyApplication
+import com.example.gigachat.Repository.ADataBase
 import com.example.gigachat.Repository.DataBaseRepository
 import com.example.gigachat.Repository.MainRepository
 import com.example.gigachat.Utils
 
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import retrofit2.HttpException
-import retrofit2.create
-import java.io.EOFException
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.Period
-import java.time.temporal.ChronoUnit
 import java.util.Date
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
+
 class AnswerViewModel @Inject constructor(val repository: MainRepository, val dbRepository: DataBaseRepository): ViewModel(){
     var result: String  by mutableStateOf("")
     val context = MyApplication.appContext
@@ -70,6 +57,7 @@ class AnswerViewModel @Inject constructor(val repository: MainRepository, val db
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun getAnswer(content: String)
     {
         val token = sharedpref.getString("token", null)?:""

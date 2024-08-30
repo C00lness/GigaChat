@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -49,9 +50,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.gigachat.Utils
 
 import com.example.gigachat.ViewModel.AnswerViewModel
@@ -76,14 +81,13 @@ fun HomeScreen (viewModel: AnswerViewModel){
         Card(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp, 70.dp, 16.dp, 16.dp),
         shape = RoundedCornerShape(16.dp),
         content = {
-            TopAppBar(title= { Text("GigaChat", fontSize = 22.sp)},
-                navigationIcon={ IconButton(onClick = {visible = !visible }) {Icon(if(visible) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp, contentDescription = "Параметры")} },
-                actions={
-                    IconButton(onClick = { }) { Icon(Icons.Filled.Info, contentDescription = "О приложении")}
-                    })
+            Row (Modifier.padding(5.dp))
+            {
+                IconButton(onClick = {visible = !visible }) {Icon(if (visible) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp, contentDescription = "Скрыть\\Показать")}
+            }
             Row (
                 Modifier
                     .alpha(if (visible) 0f else 1f))
@@ -91,10 +95,10 @@ fun HomeScreen (viewModel: AnswerViewModel){
                 Text(
                     (if(visible) "" else result!!),
                     modifier = Modifier
-                        .padding(16.dp, 8.dp)
+                        .padding(8.dp, 2.dp)
                         .verticalScroll(rememberScrollState()),
                     color = MaterialTheme.colorScheme.primary,
-                    fontSize = (if (visible) 0.sp else 16.sp)
+                    fontSize = (if (visible) 0.sp else 14.sp)
                 )
             }
             Row (
@@ -104,7 +108,7 @@ fun HomeScreen (viewModel: AnswerViewModel){
                 Column(
                     Modifier
                         .width(200.dp)
-                        .padding(8.dp, 2.dp))
+                        .padding(2.dp, 2.dp))
                 {
                     sexOptions.forEach { option ->
                         Row(
@@ -168,11 +172,11 @@ fun HomeScreen (viewModel: AnswerViewModel){
                     .fillMaxWidth()
                     .padding(16.dp, 8.dp)
                     .alpha(if (visible) 1f else 0f),
-                horizontalArrangement = Arrangement.Absolute.Center
+                horizontalArrangement = Arrangement.Absolute.Left
             ){
                 ExtendedFloatingActionButton(
                     icon = { Icon(Icons.Filled.PlayArrow, contentDescription = "Добавить") },
-                    text = { Text("Запрос") },
+                    text = { Text("Go",  fontFamily = FontFamily.Cursive, fontSize = 22.sp) },
                     onClick = {
                         var finContent:String
                         var content: String = selectedSexOption.toString() + " "

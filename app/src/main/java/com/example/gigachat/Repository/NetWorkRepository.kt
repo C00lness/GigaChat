@@ -1,7 +1,6 @@
 package com.example.gigachat.Repository
 
 import com.example.gigachat.Model.DataRaw
-import com.example.gigachat.Model.Token
 import com.example.gigachat.Net.RetrofitServices
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -4,9 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.gigachat.Model.Choices
 import com.example.gigachat.Model.DbAnswer
-import io.reactivex.Completable
 
 @Dao
 interface AnswerDao {
