@@ -58,8 +58,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val viewModel by viewModels<AnswerViewModel>()
-                    val regViewModel by viewModels<RegistrationViewModel>()
                     val navController = rememberNavController()
 
                     setContent @OptIn(ExperimentalMaterial3Api::class){
@@ -86,10 +84,16 @@ class MainActivity : ComponentActivity() {
                         )
 
                         NavHost(navController, startDestination = NavRoutes.Home.route) {
-                            composable(NavRoutes.Home.route) { HomeScreen(viewModel = viewModel)}
+                            composable(NavRoutes.Home.route) {
+                                val viewModel by viewModels<AnswerViewModel>()
+                                HomeScreen(viewModel = viewModel)
+                            }
                             composable(NavRoutes.Settings.route) { Settings() }
                             composable(NavRoutes.About.route) { About() }
-                            composable(NavRoutes.Registration.route) { Registration(regViewModel) }
+                            composable(NavRoutes.Registration.route) {
+                                val regViewModel by viewModels<RegistrationViewModel>()
+                                Registration(regViewModel)
+                            }
                         }
                     }
                 }
@@ -103,7 +107,3 @@ sealed class NavRoutes(val route: String) {
     object About : NavRoutes("about")
     object Registration : NavRoutes("registration")
 }
-
-//navController.navigate(Navigation.NavRoutes.Home.route)
-//visible = !visible
-//

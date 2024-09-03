@@ -84,16 +84,24 @@ fun HomeScreen (viewModel: AnswerViewModel){
             .padding(16.dp, 70.dp, 16.dp, 16.dp),
         shape = RoundedCornerShape(16.dp),
         content = {
-            Row (Modifier.padding(5.dp))
+            Row(Modifier.padding(5.dp))
             {
-                IconButton(onClick = {visible = !visible }) {Icon(if (visible) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp, contentDescription = "Скрыть\\Показать")}
+                IconButton(onClick = {
+                    visible = !visible
+                }) {
+                    Icon(
+                        if (visible) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                        contentDescription = "Скрыть\\Показать"
+                    )
+                }
             }
-            Row (
+            Row(
                 Modifier
-                    .alpha(if (visible) 0f else 1f))
+                    .alpha(if (visible) 0f else 1f)
+            )
             {
                 Text(
-                    (if(visible) "" else result!!),
+                    (if (visible) "" else result!!),
                     modifier = Modifier
                         .padding(8.dp, 2.dp)
                         .verticalScroll(rememberScrollState()),
@@ -101,19 +109,16 @@ fun HomeScreen (viewModel: AnswerViewModel){
                     fontSize = (if (visible) 0.sp else 14.sp)
                 )
             }
-            Row (
-                Modifier
-                .alpha(if (visible) 1f else 0f))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly)
             {
                 Column(
                     Modifier
-                        .width(200.dp)
-                        .padding(2.dp, 2.dp))
+                        .alpha(if (visible) 1f else 0f)
+                )
                 {
                     sexOptions.forEach { option ->
                         Row(
                             Modifier
-                                .fillMaxWidth()
                                 .padding(2.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -127,84 +132,76 @@ fun HomeScreen (viewModel: AnswerViewModel){
                 }
                 Column(
                     Modifier
-                        .width(200.dp)
-                        .padding(8.dp, 2.dp))
+                        .alpha(if (visible) 1f else 0f)
+                )
                 {
                     resultOptions.forEach { option ->
                         Row(
                             Modifier
-                                .fillMaxWidth()
                                 .padding(2.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            RadioButton(selected = (option == selectedResultOption),onClick = { selectedResultOption = option })
+                            RadioButton(
+                                selected = (option == selectedResultOption),
+                                onClick = { selectedResultOption = option })
                             Text(text = option, modifier = Modifier.padding(2.dp), fontSize = 14.sp)
                         }
                     }
                 }
             }
-            Row(
-                Modifier
-                .alpha(if (visible) 1f else 0f)){
-                Column (
-                    Modifier
-                        .width(200.dp)
-                        .padding(2.dp))
-                {
-                    TextField(value = textWeight,onValueChange = {textWeight = it },
-                        label = { Text("Вес (кг)", fontSize = 14.sp) },
-                        modifier = Modifier.padding(16.dp, 2.dp)
-                    )
-                }
-                Column (
-                    Modifier
-                        .width(200.dp)
-                        .padding(2.dp))
-                {
-                    TextField(value = textLenght, onValueChange = {textLenght = it},
-                        label = { Text("Рост (см)", fontSize = 14.sp) },
-                        modifier = Modifier.padding(16.dp, 2.dp)
-                    )
-                }
+            Row(Modifier.fillMaxWidth().alpha(if (visible) 1f else 0f), horizontalArrangement = Arrangement.Center) {
+                TextField(
+                    value = textWeight, onValueChange = { textWeight = it },
+                    label = { Text("Вес (кг)", fontSize = 14.sp) },
+                    modifier = Modifier.padding(16.dp, 2.dp)
+                )
+            }
+
+            Row(Modifier.fillMaxWidth().alpha(if (visible) 1f else 0f), horizontalArrangement = Arrangement.Center) {
+                TextField(
+                    value = textLenght, onValueChange = { textLenght = it },
+                    label = { Text("Рост (см)", fontSize = 14.sp) },
+                    modifier = Modifier.padding(16.dp, 2.dp)
+                )
             }
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp, 8.dp)
+                    .padding(16.dp)
                     .alpha(if (visible) 1f else 0f),
                 horizontalArrangement = Arrangement.Absolute.Left
-            ){
+            ) {
                 ExtendedFloatingActionButton(
                     icon = { Icon(Icons.Filled.PlayArrow, contentDescription = "Добавить") },
-                    text = { Text("Go",  fontFamily = FontFamily.Cursive, fontSize = 22.sp) },
+                    text = { Text("Go", fontFamily = FontFamily.Cursive, fontSize = 22.sp) },
                     onClick = {
-                        var finContent:String
+                        var finContent: String
                         var content: String = selectedSexOption.toString() + " "
-                        if(selectedResultOption.toString() == "Накачаться")
-                        {
+                        if (selectedResultOption.toString() == "Накачаться") {
                             content = content + "Хочу накачать мышцы "
-                            finContent = "Составь примерную программу тренировок на грудь и ягодицы."
-                        }
-                        else
-                        {
+                            finContent =
+                                "Составь примерную программу тренировок на грудь и ягодицы."
+                        } else {
                             content = content + "Хочу похудеть "
                             finContent = "Составь пожалуйста меню на день."
                         }
-                        content = content + textWeight.toString() + " килограмм. " + textLenght.toString() + " сантиметров. " + finContent
+                        content =
+                            content + textWeight.toString() + " килограмм. " + textLenght.toString() + " сантиметров. " + finContent
                         viewModel.getResult(content)
                     }
                 )
             }
-            Text(
-                result!!,
-                modifier = Modifier
-                    .alpha(if (visible) 1f else 0f)
-                    .padding(16.dp, 8.dp)
-                    .verticalScroll(rememberScrollState()),
-                color = MaterialTheme.colorScheme.primary
-            )
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Text(
+                    result!!,
+                    modifier = Modifier
+                        .alpha(if (visible) 1f else 0f)
+                        .padding(24.dp)
+                        .verticalScroll(rememberScrollState()),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
     )
-
 }
